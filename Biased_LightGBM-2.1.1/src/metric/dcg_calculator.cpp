@@ -14,13 +14,13 @@ std::vector<double> DCGCalculator::label_gain_;
 std::vector<double> DCGCalculator::discount_;
 const data_size_t DCGCalculator::kMaxPosition = 10000;
 
-void DCGCalculator::Init(std::vector<double> input_label_gain) { /// 2^label - 1, label=0,1,2,3,4,5
+void DCGCalculator::Init(std::vector<double> input_label_gain) {
   label_gain_.resize(input_label_gain.size());
   for(size_t i = 0;i < input_label_gain.size();++i){
     label_gain_[i] = static_cast<double>(input_label_gain[i]);
   }
   discount_.resize(kMaxPosition);
-  for (data_size_t i = 0; i < kMaxPosition; ++i) { ///
+  for (data_size_t i = 0; i < kMaxPosition; ++i) {
     discount_[i] = 1.0f / std::log2(2.0f + i);
   }
 }
@@ -63,7 +63,7 @@ void DCGCalculator::CalMaxDCG(const std::vector<data_size_t>& ks,
   int top_label = static_cast<int>(label_gain_.size()) - 1;
   // calculate k Max DCG by one pass
   for (size_t i = 0; i < ks.size(); ++i) {
-    data_size_t cur_k = ks[i]; // current dcg@k
+    data_size_t cur_k = ks[i];
     if (cur_k > num_data) { cur_k = num_data; }
     for (data_size_t j = cur_left; j < cur_k; ++j) {
       while (top_label > 0 && label_cnt[top_label] <= 0) {
@@ -114,7 +114,7 @@ void DCGCalculator::CalDCG(const std::vector<data_size_t>& ks, const label_t* la
   double cur_result = 0.0f;
   data_size_t cur_left = 0;
   // calculate multi dcg by one pass
-  for (size_t i = 0; i < ks.size(); ++i) { // for each n in ncdg@n 
+  for (size_t i = 0; i < ks.size(); ++i) {
     data_size_t cur_k = ks[i];
     if (cur_k > num_data) { cur_k = num_data; }
     for (data_size_t j = cur_left; j < cur_k; ++j) {
@@ -130,8 +130,8 @@ void DCGCalculator::CheckLabel(const label_t* label, data_size_t num_data) {
   for (data_size_t i = 0; i < num_data; ++i) {
     label_t delta = std::fabs(label[i] - static_cast<int>(label[i]));
     if (delta > kEpsilon) {
-      Log::Fatal("label should be int type (met %f) for ranking task,\n"
-                 "for the gain of label, please set the label_gain parameter", label[i]);
+      Log::Fatal("label should be int type (met %f) for ranking task, \
+                 for the gain of label, please set the label_gain parameter.", label[i]);
     }
     if (static_cast<size_t>(label[i]) >= label_gain_.size() || label[i] < 0) {
       Log::Fatal("label (%d) excel the max range %d", label[i], label_gain_.size());

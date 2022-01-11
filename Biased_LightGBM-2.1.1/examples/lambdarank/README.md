@@ -1,11 +1,3 @@
-# Modeling done with original LightGBM v 2.1.1
-
-* Executed standard input with parameter configuration as in the unbiased setting.
-* Results show nosignificant differences.
-
-
---- 
-
 LambdaRank Example
 ==================
 

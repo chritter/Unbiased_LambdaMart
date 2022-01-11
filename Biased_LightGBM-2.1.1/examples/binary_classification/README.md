@@ -1,20 +1,12 @@
-# Modeling done with original LightGBM v 2.1.1
+Binary Classification Example
+=============================
 
-* Executed standard input with parameter configuration as in the unbiased setting.
-* Results show nosignificant differences.
-
-
---- 
-
-LambdaRank Example
-==================
-
-Here is an example for LightGBM to run lambdarank task.
+Here is an example for LightGBM to run binary classification task.
 
 ***You should copy executable file to this folder first.***
 
-Training
---------
+Trainin
+-------
 
 For Windows, by running following command in this folder:
 

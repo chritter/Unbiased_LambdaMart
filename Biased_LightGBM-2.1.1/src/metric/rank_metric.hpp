@@ -16,14 +16,13 @@ namespace LightGBM {
 class NDCGMetric:public Metric {
 public:
   explicit NDCGMetric(const MetricConfig& config) {
-    // std::cout << "call NDCGMetric" << std::endl;
     // get eval position
     for (auto k : config.eval_at) {
       eval_at_.push_back(static_cast<data_size_t>(k));
     }
     eval_at_.shrink_to_fit();
     // initialize DCG calculator
-    DCGCalculator::Init(config.label_gain); // label_gain input param, but by default 2^label - 1,
+    DCGCalculator::Init(config.label_gain);
     // get number of threads
     #pragma omp parallel
     #pragma omp master
@@ -51,11 +50,11 @@ public:
     // get query weights
     query_weights_ = metadata.query_weights();
     if (query_weights_ == nullptr) {
-      sum_query_weights_ = static_cast<double>(num_queries_); /// 不加权
+      sum_query_weights_ = static_cast<double>(num_queries_);
     } else {
       sum_query_weights_ = 0.0f;
       for (data_size_t i = 0; i < num_queries_; ++i) {
-        sum_query_weights_ += query_weights_[i]; /// 累计query_weights_
+        sum_query_weights_ += query_weights_[i];
       }
     }
     inverse_max_dcgs_.resize(num_queries_);
@@ -86,7 +85,7 @@ public:
     return 1.0f;
   }
 
-  std::vector<double> Eval(const double* score, const ObjectiveFunction*) const override { /// ndcg评测，按query_weights加权
+  std::vector<double> Eval(const double* score, const ObjectiveFunction*) const override {
     // some buffers for multi-threading sum up
     std::vector<std::vector<double>> result_buffer_;
     for (int i = 0; i < num_threads_; ++i) {
@@ -129,7 +128,7 @@ public:
                                 query_boundaries_[i + 1] - query_boundaries_[i], &tmp_dcg);
           // calculate NDCG
           for (size_t j = 0; j < eval_at_.size(); ++j) {
-            result_buffer_[tid][j] += tmp_dcg[j] * inverse_max_dcgs_[i][j] * query_weights_[i]; /// 按query_weights加权
+            result_buffer_[tid][j] += tmp_dcg[j] * inverse_max_dcgs_[i][j] * query_weights_[i];
           }
         }
       }
@@ -140,7 +139,7 @@ public:
       for (int i = 0; i < num_threads_; ++i) {
         result[j] += result_buffer_[i][j];
       }
-      result[j] /= sum_query_weights_; /// 按query_weights占比加权平均，不加权的就是平均值
+      result[j] /= sum_query_weights_;
     }
     return result;
   }
